@@ -39,6 +39,11 @@ button {
     text-align: center;
     font-family: 'Rubik', sans-serif;
     cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+button:active {
+    transform: scale(.95);
 }
 
 ul {
