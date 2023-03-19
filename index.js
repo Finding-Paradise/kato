@@ -4,6 +4,7 @@ import {
   ref,
   push,
   onValue,
+  remove
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 const appSettings = {
@@ -28,12 +29,13 @@ addButtonEl.addEventListener("click", function () {
 });
 
 onValue(shoppingListInDB, function (snapshot) {
-  let itemsArray = Object.values(snapshot.val());
+  let itemsArray = Object.entries(snapshot.val());
 
   clearShoppingListEl();
 
   for (let i = 0; i < itemsArray.length; i++) {
-    appendItemToShoppingListEl(itemsArray[i]);
+    let currentItem = itemsArray[i]
+    appendItemToShoppingListEl(currentItem);
   }
 });
 
@@ -45,6 +47,20 @@ function clearShoppingListEl() {
   shoppingListEl.innerHTML = "";
 }
 
-function appendItemToShoppingListEl(itemValue) {
-  shoppingListEl.innerHTML += `<li>${itemValue}</li>`;
+function appendItemToShoppingListEl(item) {
+  // shoppingListEl.innerHTML += `<li>${itemValue}</li>`;
+  let itemID = item[0]
+  let itemValue = item[1]
+  let newEl = document.createElement("li")
+  newEl.textContent = itemValue
+  shoppingListEl.append(newEl)
+
+  newEl.addEventListener("click", function () {
+    removeItemFromShoppingListEl(itemID)
+  })
+}
+
+function removeItemFromShoppingListEl(itemID) {
+  let exactLocationOfItemInDB = ref(database, `shoppingList/${itemID}`)
+  remove(exactLocationOfItemInDB)
 }
